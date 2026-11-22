@@ -20,9 +20,10 @@ class Package:
         self.deadline = self.convert_deadline(package_data.get("delivery_deadline"))
         self.notes = package_data.get("delivery_notes")
         self.status = self.status_string(package_data.get("delivery_status"))
-        self.group = []
-        self.delivery_location = distance_table.address_to_location(self.address)
+        self.location = self.get_location()
 
+    def get_location(self, dist_table: DistanceTable):
+        pass
 
     def convert_deadline(self, deadline: str):
         deadline = deadline.strip()
