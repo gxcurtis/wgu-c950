@@ -17,6 +17,13 @@ class DistanceTable:
             location_address = location_data[1].strip().strip(",")
             self.locations.append(Location(location_name, location_address))
 
+    # Get location by name
+    def get_location(self, name: str):
+        for location in self.locations:
+            if location.name.lower() == name.lower():
+                return location        
+        return None
+    
     # Helper function for parsing distance table csv data
     def load_from_csv(self, csv_file):
         csv_file = Path(csv_file)
@@ -47,9 +54,14 @@ class DistanceTable:
             # Sort neighbor references by distance (closest to furthest)
             self.locations[i].sort_neighbors()
 
+    def print_locations(self):
+        for location in self.locations:
+            print(location)
+
+        print(f"Total Locations: {len(self.locations)}")
+
 if __name__ == "__main__":
     dt = DistanceTable()
-    for location in dt.locations:
-        print(location)
-
-    print(f"Total locations: {len(dt.locations)}")
+    loc = dt.get_location("Western Governors University")
+    if loc is not None:
+        loc.print_neighbors()
