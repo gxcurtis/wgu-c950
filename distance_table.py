@@ -1,3 +1,5 @@
+import csv
+from pathlib import Path
 from location import Location
 
 class DistanceTable:
@@ -44,3 +46,10 @@ class DistanceTable:
                 self.locations[i].add_neighbor(self.locations[j], distance)
             # Sort neighbor references by distance (closest to furthest)
             self.locations[i].sort_neighbors()
+
+if __name__ == "__main__":
+    dt = DistanceTable()
+    for location in dt.locations:
+        print(location)
+
+    print(f"Total locations: {len(dt.locations)}")
