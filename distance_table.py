@@ -1,3 +1,4 @@
+from location import Location
 
 class DistanceTable:
     def __init__(self, csv_file="wgups_distance_table.csv"):
@@ -14,18 +15,6 @@ class DistanceTable:
             location_address = location_data[1].strip().strip(",")
             self.locations.append(Location(location_name, location_address))
 
-    def get_location(self, location_name: str):
-        for location in self.locations:
-            if location.name.lower() == location_name.lower():
-                return location
-        raise ValueError(f"Location not found: {location_name}")
-
-    def address_to_location(self, address: str):
-        for location in self.locations:
-            if address in location.address:
-                return location
-            return None
-
     # Helper function for parsing distance table csv data
     def load_from_csv(self, csv_file):
         csv_file = Path(csv_file)
@@ -40,6 +29,7 @@ class DistanceTable:
 
         # Parse data beginning at row 8
         rows = csv_data[8:]
+        # Get distance data from row/column, or inversely, column/row
         for i, row in enumerate(rows):
             self.locations[i].set_zip_code(row[:2])
             for j, col in enumerate(row[2:]):
@@ -52,4 +42,5 @@ class DistanceTable:
                 if distance == 0.0:
                     continue
                 self.locations[i].add_neighbor(self.locations[j], distance)
+            # Sort neighbor references by distance (closest to furthest)
             self.locations[i].sort_neighbors()

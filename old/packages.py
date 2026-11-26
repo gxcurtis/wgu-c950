@@ -164,8 +164,6 @@ class PackageHashTable:
             next_package = package.get_nearest_neighbor()
 
                 
-
-    
     # Load package data from csv task file
     def load_from_csv(self, csv_file):
         self.csv_file = Path(csv_file)
