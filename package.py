@@ -1,3 +1,4 @@
+from location import Location
 from distance_table import DistanceTable
 
 dist_table = DistanceTable()
@@ -10,7 +11,13 @@ class Package:
         self.weight = package_data.get("package_weight")
         self.state = package_data.get("delivery_state")
         self.zip_code = package_data.get("delivery_zip_code")
-        self.deadline = self.convert_deadline(package_data.get("delivery_deadline"))
+        self.deadline = package_data.get("delivery_deadline")
         self.notes = package_data.get("delivery_notes")
-        self.status = self.status_string(package_data.get("delivery_status"))
-        self.location = dist_table.get_location()
+        self.status = package_data.get("delivery_status")
+        self.location: Location | None = None
+
+    def __str__(self):
+        return f"Package {self.id}, {self.status} -> {self.address} : Delivered by {self.deadline}"
+
+    def set_location(self, location: Location):
+        self.location = location

@@ -23,7 +23,12 @@ class DistanceTable:
             if location.name.lower() == name.lower():
                 return location        
         return None
-    
+
+    # Get location by address
+    def get_location_by_address(self):
+        # TODO
+        pass
+
     # Helper function for parsing distance table csv data
     def load_from_csv(self, csv_file):
         csv_file = Path(csv_file)

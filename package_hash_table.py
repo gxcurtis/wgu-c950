@@ -1,11 +1,13 @@
-import re
-
-from package imoprt Package
+import csv
+from pathlib import Path
+from package import Package
+from distance_table import DistanceTable
 
 ### Hash Table data structure with tasks A & B ###
 class PackageHashTable:
     def __init__(self, size=40, csv_file="wgups_package_file.csv"):
-        self.packages = [None] * size
+        self.packages: list[Package | None] = [None] * size
+        self.distance_table = DistanceTable()
         self.load_from_csv(csv_file)
 
     #####################
@@ -23,6 +25,19 @@ class PackageHashTable:
             delivery_status = delivery_status,
             delivery_notes = delivery_notes
         )
+
+        if delivery_address is not None:
+            package_location = self.distance_table.get_location(delivery_address)
+        else:
+            package_location = None
+
+        if package_location is not None:
+            package.set_location(package_location)
+        else:
+            print(f"Location not found with address: {delivery_address}")
+
+
+
         # Hash Package ID with modulo operator and store at index
         index = package.id % len(self.packages)
         self.packages[index] = package
@@ -30,7 +45,7 @@ class PackageHashTable:
     #####################
     ### Requirement B ###
     #####################
-    def get_package(self, package_id: int) -> Package:
+    def get_package(self, package_id: int) -> Package | None:
         # Return Package object at index
         package_id = int(package_id)
         if package_id < 1 or package_id > len(self.packages):
@@ -47,7 +62,9 @@ class PackageHashTable:
         with open(csv_file, "r", encoding="utf-8") as file:
             rows = list(csv.reader(file))
 
-        package_groups = []
+        # Track packages that must be delivered together
+        package_group = []
+
         start_loading = False
         for row in rows:
             if "Package" in row[0] and "ID" in row[0]:
@@ -67,7 +84,7 @@ class PackageHashTable:
             
             # Load packages after the header row is parsed
             if start_loading:
-                package_id = row[package_id_index]
+                package_id = int(row[package_id_index])
                 delivery_notes = row[notes_index]
 
                 if "Delayed" in delivery_notes:
@@ -89,7 +106,14 @@ class PackageHashTable:
                 )
 
                 if "Must be delivered with" in delivery_notes:
-                    group = re.findall(r'\d+', delivery_notes) + [package_id]
-                    package_groups.append(group)
+                    package_group.append(self.get_package(package_id))
 
-        self.update_package_groups(package_groups)
+    def print_packages(self):
+        for package in self.packages:
+            print(package)
+
+if __name__ == "__main__":
+    pht = PackageHashTable()
+    for package in pht.packages:
+        if package is not None:
+            print(type(package.location))
